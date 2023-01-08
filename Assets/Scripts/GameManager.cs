@@ -53,6 +53,7 @@ public class GameManager : MonoBehaviour
         
         Instance = this;
         StartCoroutine(LoadFirst());
+        Cursor.lockState = CursorLockMode.Locked;
         // LoadGame();
         DontDestroyOnLoad(gameObject);
     }
