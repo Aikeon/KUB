@@ -58,11 +58,6 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    void Start()
-    {
-        PlayMusic(0);
-    }
-
     void Update()
     {
         if (Input.GetKeyDown(InputManager.Instance.cancel) && inGame && pauseOption == -1 && discovered && DoorBehaviour.movement == null && CameraControl.movement == null)

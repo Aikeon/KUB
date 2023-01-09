@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class DangerBehaviour : MonoBehaviour
 {
-    void OnCollisionEnter(Collision collisionInfo)
+    void OnTriggerEnter(Collider collisionInfo)
     {
-        if (collisionInfo.collider.gameObject.TryGetComponent<PlayerControl>(out var pc))
+        if (collisionInfo.gameObject.tag == "Player")
         {
+            collisionInfo.gameObject.transform.parent.TryGetComponent<PlayerControl>(out var pc);
             pc.Die();
         }
     }
