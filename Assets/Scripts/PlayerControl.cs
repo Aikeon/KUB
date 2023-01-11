@@ -28,6 +28,7 @@ public class PlayerControl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        GameManager.Instance.Player = this;
         colls = new Collider[20];
         basePos = transform.position;
         rb = GetComponent<Rigidbody>();
@@ -137,7 +138,6 @@ public class PlayerControl : MonoBehaviour
 
     public void Die()
     {
-        //TODO : Death anim, death marker ?
         Instantiate(deathFX,transform.position, transform.rotation);
         GetComponent<Renderer>().enabled = false;
         GameManager.Instance.PlaySound(4);
@@ -155,6 +155,10 @@ public class PlayerControl : MonoBehaviour
         while (timeEllapsed < 1f)
         {
             KUB.rotation = Quaternion.Lerp(KUB.rotation, Quaternion.identity, timeEllapsed);
+            foreach (AntigravityBehaviour p in AntigravityBehaviour.staticPlatforms)
+            {
+                p.transform.localRotation = Quaternion.Lerp(p.transform.localRotation, p.baseRot, timeEllapsed);
+            }
             timeEllapsed += Time.deltaTime;
             yield return null;
         }

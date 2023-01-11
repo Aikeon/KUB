@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
     private bool delay;
     public bool discovered;
     public bool konamiCoded;
+    public PlayerControl Player;
 
     void Awake()
     {
@@ -76,12 +77,16 @@ public class GameManager : MonoBehaviour
 
             if (Input.GetKeyDown(InputManager.Instance.enter)) 
             {
+                if (CameraControl.currentlyOrthographic) pause = false; 
+                pauseTexts[pauseOption].color = Color.white;
                 switch (pauseOption)
                 {
-                    case 0: if (CameraControl.currentlyOrthographic) pause = false; pauseTexts[pauseOption].color = Color.white; pauseOption = -1; transform.GetChild(0).gameObject.SetActive(false); break;
-                    case 1: break; //TODO Options ?
-                    case 2: if (CameraControl.currentlyOrthographic) pause = false; pauseTexts[pauseOption].color = Color.white; pauseOption = -1; transform.GetChild(0).gameObject.SetActive(false); GameManager.Instance.inGame = false; SceneManager.LoadScene("TitleScreen"); break;//TODO anim ?
+                    case 0: break;
+                    case 1: GameObject.Find("Player").GetComponent<PlayerControl>().Die(); break; //TODO Options ?
+                    case 2: GameManager.Instance.inGame = false; SceneManager.LoadScene("TitleScreen"); break;//TODO anim ?
                 }
+                pauseOption = -1;
+                transform.GetChild(0).gameObject.SetActive(false);
             }
             if (Input.GetKeyDown(InputManager.Instance.cancel)) {if (CameraControl.currentlyOrthographic) pause = false; pauseTexts[pauseOption].color = Color.white; pauseOption = -1; transform.GetChild(0).gameObject.SetActive(false);}
         }
@@ -98,6 +103,7 @@ public class GameManager : MonoBehaviour
         currentLevel++;
         PlaySound(3);
         pause = true;
+        AntigravityBehaviour.staticPlatforms.Clear();
         if (currentLevel == 6) discovered = true;
         levelsUnlocked.Add(currentLevel);
         GameManager.Instance.SaveGame();

@@ -3091,7 +3091,10 @@ MonoBehaviour:
   pauseOption: -1
   musics: []
   sounds: []
+  fondu: {fileID: 0}
   discovered: 0
+  konamiCoded: 0
+  Player: {fileID: 0}
 --- !u!114 &1219638770
 MonoBehaviour:
   m_ObjectHideFlags: 0

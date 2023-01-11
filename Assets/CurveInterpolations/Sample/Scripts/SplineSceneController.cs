@@ -86,7 +86,7 @@ public class SplineSceneController : MonoBehaviour
                     CubicBezierCurve cubicBezierCurve = new CubicBezierCurve(points[i * 3], points[i * 3 + 1], points[i * 3 + 2], points[i * 3 + 3]);
                     var len = cubicBezierCurve.GetLength();
                     var curvePoints = cubicBezierCurve.GetPoints((int)(len * 4));
-                    Debug.Log($"divisions {curvePoints.Length}");
+                    //Debug.Log($"divisions {curvePoints.Length}");
 
                     if (generatedCubic.Count < i + 1)
                     {

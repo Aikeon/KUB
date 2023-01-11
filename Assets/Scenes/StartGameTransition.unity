@@ -939,7 +939,7 @@ GameObject:
   - component: {fileID: 1158922432}
   - component: {fileID: 1158922431}
   m_Layer: 5
-  m_Name: Options
+  m_Name: Retry
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -985,7 +985,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: ---
+  m_text: Retry
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: bf2eff0a196528447b9c3b30584eafcc, type: 2}
   m_sharedMaterial: {fileID: -2803816136405649823, guid: bf2eff0a196528447b9c3b30584eafcc, type: 2}

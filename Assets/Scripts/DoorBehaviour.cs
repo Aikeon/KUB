@@ -108,6 +108,7 @@ public class DoorBehaviour : MonoBehaviour
         KUB.eulerAngles = new Vector3(Mathf.RoundToInt(KUB.eulerAngles.x/90)*90,Mathf.RoundToInt(KUB.eulerAngles.y/90)*90,Mathf.RoundToInt(KUB.eulerAngles.z/90)*90);
         gameObject.GetComponent<Collider>().enabled = true;
         GameManager.Instance.pause = false;
+        Player.position = new Vector3(Player.position.x, -10.49f, -10.5f);
         yield return new WaitForSeconds(0.025f);
         movement = null;
     }
@@ -126,6 +127,7 @@ public class DoorBehaviour : MonoBehaviour
         KUB.eulerAngles = new Vector3(Mathf.RoundToInt(KUB.eulerAngles.x/90)*90,Mathf.RoundToInt(KUB.eulerAngles.y/90)*90,Mathf.RoundToInt(KUB.eulerAngles.z/90)*90);
         gameObject.GetComponent<Collider>().enabled = true;
         GameManager.Instance.pause = false;
+        Player.position = new Vector3(Player.position.x, 10.49f, -10.5f);
         yield return new WaitForSeconds(0.025f);
         movement = null;
     }
@@ -144,6 +146,7 @@ public class DoorBehaviour : MonoBehaviour
         KUB.eulerAngles = new Vector3(Mathf.RoundToInt(KUB.eulerAngles.x/90)*90,Mathf.RoundToInt(KUB.eulerAngles.y/90)*90,Mathf.RoundToInt(KUB.eulerAngles.z/90)*90);
         gameObject.GetComponent<Collider>().enabled = true;
         GameManager.Instance.pause = false;
+        Player.position = new Vector3(10.49f, Player.position.y, -10.5f);
         yield return new WaitForSeconds(0.025f);
         movement = null;
     }
@@ -162,6 +165,7 @@ public class DoorBehaviour : MonoBehaviour
         KUB.eulerAngles = new Vector3(Mathf.RoundToInt(KUB.eulerAngles.x/90)*90,Mathf.RoundToInt(KUB.eulerAngles.y/90)*90,Mathf.RoundToInt(KUB.eulerAngles.z/90)*90);
         gameObject.GetComponent<Collider>().enabled = true;
         GameManager.Instance.pause = false;
+        Player.position = new Vector3(-10.49f, Player.position.y, -10.5f);
         yield return new WaitForSeconds(0.025f);
         movement = null;
     }
