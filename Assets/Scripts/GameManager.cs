@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
     public bool discovered;
     public bool konamiCoded;
     public PlayerControl Player;
+    private Coroutine transitLevel;
 
     void Awake()
     {
@@ -55,12 +56,12 @@ public class GameManager : MonoBehaviour
         Instance = this;
         StartCoroutine(LoadFirst());
         Cursor.lockState = CursorLockMode.Locked;
-        // LoadGame();
         DontDestroyOnLoad(gameObject);
     }
 
     void Update()
     {
+        if (transitLevel != null) return;
         if (Input.GetKeyDown(InputManager.Instance.cancel) && inGame && pauseOption == -1 && discovered && DoorBehaviour.movement == null && CameraControl.movement == null)
         {
             pause = true;
@@ -107,7 +108,7 @@ public class GameManager : MonoBehaviour
         if (currentLevel == 6) discovered = true;
         levelsUnlocked.Add(currentLevel);
         GameManager.Instance.SaveGame();
-        StartCoroutine(transition());
+        transitLevel = StartCoroutine(transition());
     }
 
     IEnumerator transition()
@@ -134,6 +135,7 @@ public class GameManager : MonoBehaviour
             timeEllapsed += Time.deltaTime;
             yield return null;
         }
+        transitLevel = null;
         pause = false;
     }
 
@@ -193,7 +195,6 @@ public class GameManager : MonoBehaviour
             BinaryFormatter bf = new BinaryFormatter();
             FileStream file = File.Open(Application.persistentDataPath + "/gamesave.save", FileMode.Open);
             Save save = (Save)bf.Deserialize(file);
-            Debug.Log(save.jump);
             file.Close();
 
             levelsUnlocked = new List<int>();
@@ -274,14 +275,15 @@ public class GameManager : MonoBehaviour
     {
         while (InputManager.Instance == null) yield return null;
         LoadGame();
-        if (GameManager.Instance.levelsUnlocked.Contains(6))
-        {
-            SceneManager.LoadScene("TitleScreen");
-        }
-        else 
-        {
-            GameManager.Instance.inGame = true;
-            SceneManager.LoadScene("Level1");
-        }
+        SceneManager.LoadScene("LevelEditor");
+        // if (GameManager.Instance.levelsUnlocked.Contains(6))
+        // {
+        //     SceneManager.LoadScene("TitleScreen");
+        // }
+        // else 
+        // {
+        //     GameManager.Instance.inGame = true;
+        //     SceneManager.LoadScene("Level1");
+        // }
     }
 }
