@@ -249,6 +249,7 @@ GameObject:
   - component: {fileID: 839674353}
   - component: {fileID: 839674352}
   - component: {fileID: 839674351}
+  - component: {fileID: 839674354}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -306,6 +307,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &839674354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 839674350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6373bf5e9cd1dd4193283d3034149d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -478,6 +491,7 @@ MonoBehaviour:
   discovered: 0
   konamiCoded: 0
   Player: {fileID: 0}
+  KUB: {fileID: 0}
 --- !u!1 &1131116673
 GameObject:
   m_ObjectHideFlags: 0
@@ -807,7 +821,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5380632105141739719, guid: e2f98eda45e673a43a2461c4b2633be8, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5380632105141739740, guid: e2f98eda45e673a43a2461c4b2633be8, type: 3}
       propertyPath: m_LocalPosition.x

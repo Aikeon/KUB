@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
     public bool discovered;
     public bool konamiCoded;
     public PlayerControl Player;
+    public GameObject KUB;
     private Coroutine transitLevel;
 
     void Awake()
@@ -83,7 +84,7 @@ public class GameManager : MonoBehaviour
                 switch (pauseOption)
                 {
                     case 0: break;
-                    case 1: GameObject.Find("Player").GetComponent<PlayerControl>().Die(); break; //TODO Options ?
+                    case 1: GameObject.Find("Player").GetComponent<PlayerControl>().Die(); break;
                     case 2: GameManager.Instance.inGame = false; SceneManager.LoadScene("TitleScreen"); break;//TODO anim ?
                 }
                 pauseOption = -1;
@@ -98,20 +99,23 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void goToNextLevel()
+    public void goToNextLevel(bool isCustomLevel)
     {
         //TODO : Fondu dépendant de la couleur de fond
         currentLevel++;
         PlaySound(3);
         pause = true;
         AntigravityBehaviour.staticPlatforms.Clear();
-        if (currentLevel == 6) discovered = true;
-        levelsUnlocked.Add(currentLevel);
-        GameManager.Instance.SaveGame();
-        transitLevel = StartCoroutine(transition());
+        if (!isCustomLevel)
+        {
+            if (currentLevel == 6) discovered = true;
+            levelsUnlocked.Add(currentLevel);
+            GameManager.Instance.SaveGame();
+        }
+        transitLevel = StartCoroutine(transition((isCustomLevel ? "TitleScreen" : ("Level" + currentLevel.ToString()))));
     }
 
-    IEnumerator transition()
+    IEnumerator transition(string nextSceneName)
     {
         switch ((currentLevel-1) / 5)
         {
@@ -127,7 +131,7 @@ public class GameManager : MonoBehaviour
             timeEllapsed += Time.deltaTime;
             yield return null;
         }
-        SceneManager.LoadScene("Level" + currentLevel.ToString());
+        SceneManager.LoadScene(nextSceneName);
         yield return new WaitForSeconds(1f);
         while (timeEllapsed < 4f)
         {
@@ -275,15 +279,15 @@ public class GameManager : MonoBehaviour
     {
         while (InputManager.Instance == null) yield return null;
         LoadGame();
-        SceneManager.LoadScene("LevelEditor");
-        // if (GameManager.Instance.levelsUnlocked.Contains(6))
-        // {
-        //     SceneManager.LoadScene("TitleScreen");
-        // }
-        // else 
-        // {
-        //     GameManager.Instance.inGame = true;
-        //     SceneManager.LoadScene("Level1");
-        // }
+        // SceneManager.LoadScene("LevelEditor");
+        if (GameManager.Instance.levelsUnlocked.Contains(6))
+        {
+            SceneManager.LoadScene("TitleScreen");
+        }
+        else 
+        {
+            GameManager.Instance.inGame = true;
+            SceneManager.LoadScene("Level1");
+        }
     }
 }

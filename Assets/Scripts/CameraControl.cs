@@ -24,6 +24,7 @@ public class CameraControl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        GameManager.Instance.KUB = this.gameObject;
         cam = Camera.main;
         _changing = false;
 

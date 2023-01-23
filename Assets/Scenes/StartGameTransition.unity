@@ -690,6 +690,8 @@ MonoBehaviour:
   fondu: {fileID: 1899223058}
   discovered: 0
   konamiCoded: 0
+  Player: {fileID: 0}
+  KUB: {fileID: 0}
 --- !u!114 &1066779880
 MonoBehaviour:
   m_ObjectHideFlags: 0

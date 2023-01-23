@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using SimpleFileBrowser;
 
 public class TitleScreenManager : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class TitleScreenManager : MonoBehaviour
     [SerializeField] private Material unfilledBar;
     [SerializeField] private TextMeshProUGUI[] inputsTexts;
     [SerializeField] private TextMeshProUGUI[] inputsDisplays;
+    [SerializeField] private TextMeshProUGUI[] customLevelTexts;
     [SerializeField] private GameObject inputCanvas;
     [SerializeField] private GameObject inputChronoBoard;
     [SerializeField] private TextMeshProUGUI inputChronoText;
@@ -30,6 +32,7 @@ public class TitleScreenManager : MonoBehaviour
     private int selectedLevel;
     private int selectedOption;
     private int selectedInput;
+    private bool editorSelected;
     private bool changingInputs;
     private Coroutine selectingKey;
     private CameraControl cameraControl;
@@ -49,6 +52,7 @@ public class TitleScreenManager : MonoBehaviour
         quit = false;
         selectedLevel = 1;
         selectedOption = -1;
+        editorSelected = false;
         levelButtons = new Transform[numberOfLevels+1];
         changingInputs = false;
         for (int i = 1; i <= numberOfLevels; i++)
@@ -93,7 +97,7 @@ public class TitleScreenManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (selectingKey != null) return;
+        if (selectingKey != null || FileBrowser.IsOpen) return;
         if (inMenu)
         {
             if (changingInputs)
@@ -187,6 +191,20 @@ public class TitleScreenManager : MonoBehaviour
 
                         if (Input.GetKeyDown(InputManager.Instance.cancel)) {foreach (Renderer r in optionsTexts[selectedOption].GetComponentsInChildren<Renderer>()) r.material = notSelected; selectedOption = -1;}
                     break;
+                    case 16:
+                        if (Input.GetKeyDown(InputManager.Instance.enter))
+                        {
+                            if (editorSelected) SceneManager.LoadScene("LevelEditor");
+                            else StartCoroutine(CustomLevelFileManager.WaitForSelectionInExplorer(false,false));
+                        }
+                        if (Input.GetKeyDown(InputManager.Instance.left) || Input.GetKeyDown(InputManager.Instance.right))
+                        {
+                            editorSelected = !editorSelected;
+                            customLevelTexts[0].color = (editorSelected ? Color.white : Color.yellow);
+                            customLevelTexts[1].color = (editorSelected ? Color.yellow : Color.white);
+                        }
+                        if (Input.GetKeyDown(InputManager.Instance.cancel)) {if (editorSelected) customLevelTexts[1].color = Color.white; else customLevelTexts[0].color = Color.white; editorSelected = false;}
+                        break;
                     case 12: break;
                 }
                 
@@ -228,15 +246,31 @@ public class TitleScreenManager : MonoBehaviour
                     exitPanel.SetActive(true);
                 }
                 
+                if (Input.GetKeyDown(InputManager.Instance.up) && state == 0) state = 16;
                 if (Input.GetKeyDown(InputManager.Instance.down) && state == 0 && GameManager.Instance.konamiCoded) state = 12;
 
-                if (Input.GetKeyDown(InputManager.Instance.right) && state != 12) state++;
-                if (Input.GetKeyDown(InputManager.Instance.left) && state != 12) state--;
+                if (Input.GetKeyDown(InputManager.Instance.right) && state < 11) state++;
+                if (Input.GetKeyDown(InputManager.Instance.left) && state < 11) state--;
 
-                if (state != 12) {state = state%4; if (state == -1) state = 3;}
-                else {if (Input.GetKeyDown(InputManager.Instance.up)) state = 0;}
+                if (state < 10) {state = state%4; if (state == -1) state = 3;}
+                else 
+                {
+                    if (state == 12)
+                    {
+                        if (Input.GetKeyDown(InputManager.Instance.up)) state = 0;
+                    }
+                    else 
+                    {
+                        if (state == 16 && Input.GetKeyDown(InputManager.Instance.down)) state = 0;
+                    }
+                }
 
-                if ((Input.GetKeyDown(InputManager.Instance.enter) || Input.GetKeyDown(InputManager.Instance.jump)) && CameraControl.movement == null) {inMenu = true; cameraControl.changePerspective();};
+                if ((Input.GetKeyDown(InputManager.Instance.enter) || Input.GetKeyDown(InputManager.Instance.jump)) && CameraControl.movement == null) 
+                {
+                    inMenu = true; 
+                    cameraControl.changePerspective();
+                    if (state == 16) customLevelTexts[0].color = Color.yellow;
+                };
             }
         }
 
@@ -263,7 +297,7 @@ public class TitleScreenManager : MonoBehaviour
 
     void FixedUpdate()
     {
-        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(state == 12 ? 90f : 0f, state * 90f, 0f), 0.05f);
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(state == 12 ? 90f : state == 16 ? -90f : 0f, state * 90f, 0f), 0.05f);
     }
 
     IEnumerator changeKey(int keyId)

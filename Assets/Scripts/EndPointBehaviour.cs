@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EndPointBehaviour : MonoBehaviour
 {
@@ -12,7 +13,7 @@ public class EndPointBehaviour : MonoBehaviour
         {
             //You win !
             Debug.Log("You win !");
-            GameManager.Instance.goToNextLevel();
+            GameManager.Instance.goToNextLevel(SceneManager.GetActiveScene().name == "CustomLevel");
         }
     }
 }

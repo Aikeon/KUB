@@ -18,11 +18,11 @@ public class TileBehaviour : MonoBehaviour
 
     void Update()
     {
-        if (tileChild != null && !grid.isFrontGrid)
-        {
-            tileChild.transform.position = transform.position;
-            tileChild.transform.rotation = transform.rotation;
-        }
+        // if (tileChild != null)
+        // {
+        //     tileChild.transform.position = transform.position;
+        //     tileChild.transform.rotation = transform.rotation;
+        // }
     }
 
     void OnMouseDown()
@@ -40,12 +40,13 @@ public class TileBehaviour : MonoBehaviour
             if (tileChild != null && type != ObjectType.None && EditCustomLevel.Instance.selectedTile != this) 
             {
                 xarr = Instantiate(XArrowPrefab).GetComponent<EditArrow>(); 
-                xarr.transform.SetParent(tileChild.transform); 
-                xarr.transform.localPosition = new Vector3(2.75f,0,-0.55f);
+                xarr.transform.SetParent(tileChild.transform);
+                Debug.Log(tileChild.transform.localScale.y/grid.cellSize.y);
+                xarr.transform.localPosition = new Vector3(2.75f/tileChild.transform.localScale.x,0,-0.55f);
                 xarr.GetComponent<EditArrow>().currentTile = this;
                 yarr = Instantiate(YArrowPrefab).GetComponent<EditArrow>(); 
                 yarr.transform.SetParent(tileChild.transform); 
-                yarr.transform.localPosition = new Vector3(0,2.75f,-0.55f);
+                yarr.transform.localPosition = new Vector3(0,2.75f/tileChild.transform.localScale.y,-0.55f);
                 yarr.GetComponent<EditArrow>().currentTile = this;
                 EditCustomLevel.Instance.selectedTile = this;
             }
@@ -66,16 +67,40 @@ public class TileBehaviour : MonoBehaviour
         {
             if (t == ObjectType.None)
             {
+                if (type == ObjectType.Player) EditCustomLevel.Instance.playerPlaced = false;
                 if (tileChild != null) Destroy(tileChild);
                 tileChild = null;
             }
             else 
             {
+                if (t == ObjectType.Player) 
+                {
+                    if (EditCustomLevel.Instance.currentFace != Face.Zminus) {EditCustomLevel.Instance.ShowWarning("Player must be on front face !"); return;}
+                    if (EditCustomLevel.Instance.playerPlaced) {EditCustomLevel.Instance.ShowWarning("Only one Player allowed !"); return;}
+                    EditCustomLevel.Instance.playerPlaced = true;
+                }
                 var obj = Instantiate(elementPrefabs[(int)t - 1]);
+                obj.TryGetComponent<PlayerControl>(out var pc);
+                if (pc != null) pc.enabled = false;
+                obj.TryGetComponent<DangerBehaviour>(out var db);
+                if (db != null) db.enabled = false;
                 obj.transform.SetParent(transform);
+                obj.TryGetComponent<AntigravityBehaviour>(out var ab);
+                if (ab != null)
+                {
+                    switch (EditCustomLevel.Instance.currentFace)
+                    {
+                        case Face.Zminus:
+                        case Face.Zplus: ab.axis = AntigravityBehaviour.Axis.Z; break;
+                        case Face.Xminus:
+                        case Face.Xplus: ab.axis = AntigravityBehaviour.Axis.X; break;
+                        case Face.Yminus:
+                        case Face.Yplus: ab.axis = AntigravityBehaviour.Axis.Y; break;
+                    }
+                }
                 obj.transform.localPosition = Vector3.zero;
                 obj.transform.localScale = new Vector3(obj.transform.localScale.x * grid.cellSize.x, obj.transform.localScale.y * grid.cellSize.y, obj.transform.localScale.z);
-                obj.transform.SetParent(null);
+                obj.transform.SetParent(transform.parent.parent);
                 tileChild = obj;
             }
             type = t;

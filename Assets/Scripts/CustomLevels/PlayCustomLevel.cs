@@ -4,15 +4,23 @@ using UnityEngine;
 
 public class PlayCustomLevel : MonoBehaviour
 {
-    // Start is called before the first frame update
     void Start()
     {
-        
+        GameManager.Instance.inGame = true;
+        StartCoroutine(waitForPlayer());
     }
 
-    // Update is called once per frame
-    void Update()
+    IEnumerator waitForPlayer()
     {
-        
+        while (GameManager.Instance.Player == null)
+        {
+            yield return null;
+        }
+        LoadAction(SimpleFileBrowser.FileBrowser.Result[0]);
+    }
+
+    public void LoadAction(string path)
+    {
+        CustomLevelFileManager.LoadLevel(path,false);
     }
 }

@@ -32,9 +32,15 @@ public class PlayerControl : MonoBehaviour
         colls = new Collider[20];
         basePos = transform.position;
         rb = GetComponent<Rigidbody>();
-        groundCheckScale = new Vector3(0.49995f,0.0005f,0.1f);
-        wallCheckScale = new Vector3(0.0005f, 0.4995f, 0.1f);
+        groundCheckScale = new Vector3(0.49995f * transform.localScale.x, 0.0005f, 0.1f);
+        wallCheckScale = new Vector3(0.0005f, 0.4995f * transform.localScale.y, 0.1f);
         jumpsLeft = additionalJumps;
+    }
+
+    public void ResetCheckBoxes()
+    {
+        groundCheckScale = new Vector3(0.49995f * transform.localScale.x, 0.0005f, 0.1f);
+        wallCheckScale = new Vector3(0.0005f, 0.4995f * transform.localScale.y, 0.1f);
     }
 
     // Update is called once per frame
@@ -60,7 +66,7 @@ public class PlayerControl : MonoBehaviour
 
         yVelocity = Mathf.Clamp(yVelocity, maxFall, Mathf.Infinity);
 
-        if (Physics.CheckBox(rb.worldCenterOfMass - 0.505f * Vector3.up, groundCheckScale, Quaternion.identity, LayerMask.GetMask("Default"), QueryTriggerInteraction.Ignore))
+        if (Physics.CheckBox(rb.worldCenterOfMass - 0.505f * transform.localScale.y * Vector3.up, groundCheckScale, Quaternion.identity, LayerMask.GetMask("Default"), QueryTriggerInteraction.Ignore))
         {
             yVelocity = 0;
             highJumpTimer = 0;
@@ -76,12 +82,12 @@ public class PlayerControl : MonoBehaviour
             }
         }
 
-        if (Physics.CheckBox(rb.worldCenterOfMass - 0.505f * Vector3.right, wallCheckScale, Quaternion.identity, LayerMask.GetMask("Default"), QueryTriggerInteraction.Ignore))
+        if (Physics.CheckBox(rb.worldCenterOfMass - 0.505f * transform.localScale.x * Vector3.right, wallCheckScale, Quaternion.identity, LayerMask.GetMask("Default"), QueryTriggerInteraction.Ignore))
         {
             inputH = Mathf.Clamp(inputH,0,1);
         }
 
-        if (Physics.CheckBox(rb.worldCenterOfMass + 0.505f * Vector3.right, wallCheckScale, Quaternion.identity, LayerMask.GetMask("Default"), QueryTriggerInteraction.Ignore))
+        if (Physics.CheckBox(rb.worldCenterOfMass + 0.505f * transform.localScale.x * Vector3.right, wallCheckScale, Quaternion.identity, LayerMask.GetMask("Default"), QueryTriggerInteraction.Ignore))
         {
             inputH = Mathf.Clamp(inputH,-1,0);
         }
@@ -116,7 +122,7 @@ public class PlayerControl : MonoBehaviour
 
         inputH = Mathf.Clamp(inputH,-1,1);
 
-        newVelocity = new Vector3(inputH*speed, (Physics.CheckBox(rb.worldCenterOfMass + 0.505f * Vector3.up, groundCheckScale, Quaternion.identity, LayerMask.GetMask("Default"), QueryTriggerInteraction.Ignore) && yVelocity > 0) ? 0 : yVelocity, 0f);
+        newVelocity = new Vector3(inputH*speed, (Physics.CheckBox(rb.worldCenterOfMass + 0.505f * transform.localScale.y * Vector3.up, groundCheckScale, Quaternion.identity, LayerMask.GetMask("Default"), QueryTriggerInteraction.Ignore) && yVelocity > 0) ? 0 : yVelocity, 0f);
         // rb.velocity = newVelocity;
     }
 

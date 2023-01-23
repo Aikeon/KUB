@@ -13,8 +13,8 @@ public class GridManager : MonoBehaviour
     private Vector2 latestActiveGridSize;
     private float latestGridLineWidth;
     public TileBehaviour[] tiles;
-    public bool isFrontGrid;
     public int tileColumnNumber;
+    public bool isActive;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,11 +22,13 @@ public class GridManager : MonoBehaviour
         latestActiveGridSize = activeGridSize;
         latestGridLineWidth = gridLineWidth;
         GenerateGrid();
+        GridActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.G)) GridActive(false);
         if (latestActiveGridSize != activeGridSize || latestCellSize != cellSize || latestGridLineWidth != gridLineWidth)
         {
             ClearGrid();
@@ -42,6 +44,8 @@ public class GridManager : MonoBehaviour
         var c = transform.childCount;
         for (int i = 0; i < c; i++)
         {
+            transform.GetChild(i).TryGetComponent<TileBehaviour>(out var tile);
+            if (tile != null && tile.tileChild != null) Destroy(tile.tileChild);
             Destroy(transform.GetChild(i).gameObject);
         }
     }
@@ -52,11 +56,11 @@ public class GridManager : MonoBehaviour
         tiles = new TileBehaviour[(int)(activeGridSize.y / cellSize.y) * tileColumnNumber];
         if (cellSize.x == 0 || cellSize.y == 0) return;
         var genLine = false;
-        var iP = -3;
-        var jP = -3;
-        for (float i = -activeGridSize.y / 2f - 5f * cellSize.y / 2f; i < activeGridSize.y / 2f + 3 * cellSize.y; i += cellSize.y)
+        var iP = -3 * (int)(1/cellSize.y);
+        var jP = -3 * (int)(1/cellSize.x);
+        for (float i = -activeGridSize.y / 2f + cellSize.y / 2f - 3f; i < activeGridSize.y / 2f + 3; i += cellSize.y)
         {
-            jP = -3;
+            jP = -3 * (int)(1/cellSize.x);
             if (genLine && iP >= 0 && iP < tileColumnNumber)
             {
                 var line_i = Instantiate(LinePrefab);
@@ -69,7 +73,7 @@ public class GridManager : MonoBehaviour
                 lri.GetComponent<GridLineBehaviour>().point1 = new Vector3(i - cellSize.y / 2f,-activeGridSize.x/2f,0);
                 lri.GetComponent<GridLineBehaviour>().point2 = new Vector3(i - cellSize.y / 2f,activeGridSize.x/2f,0);
             }
-            for (float j = -activeGridSize.x / 2f - 5f * cellSize.x / 2f; j < activeGridSize.x / 2f + 3 * cellSize.x; j += cellSize.x)
+            for (float j = -activeGridSize.x / 2f + cellSize.x / 2f - 3f; j < activeGridSize.x / 2f + 3; j += cellSize.x)
             {
                 if (!genLine && j != -activeGridSize.x / 2f + cellSize.x / 2f && jP >= 0 && jP < tileColumnNumber)
                 {
@@ -85,7 +89,9 @@ public class GridManager : MonoBehaviour
                 }
                 var tile = Instantiate(TilePrefab);
                 tile.transform.SetParent(transform);
+                tile.transform.localScale = new Vector3(tile.transform.localScale.x * cellSize.x, tile.transform.localScale.x * cellSize.y, tile.transform.localScale.z);
                 tile.transform.localPosition = new Vector3(j,i,0f);
+                tile.transform.localRotation = Quaternion.identity;
                 tile.GetComponent<TileBehaviour>().iPos = iP;
                 tile.GetComponent<TileBehaviour>().jPos = jP;
                 tile.GetComponent<TileBehaviour>().grid = this;
@@ -95,6 +101,16 @@ public class GridManager : MonoBehaviour
             }
             genLine = true;
             iP++;
+        }
+    }
+
+    public void GridActive(bool state)
+    {
+        isActive = state;
+        var childCount = transform.childCount;
+        for (int k = 0; k < childCount; k++)
+        {
+            transform.GetChild(k).gameObject.SetActive(state);
         }
     }
 }
