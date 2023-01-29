@@ -55,11 +55,11 @@ public class EditCustomLevel : MonoBehaviour
         grids[0].GridActive(true);
         showingExitMenu = false;
         ChangeReachableOrOpenState(0,true,true);
-        ChangeReachableOrOpenState(1,true,true);
-        ChangeReachableOrOpenState(2,true,true);
-        ChangeReachableOrOpenState(3,true,true);
-        ChangeReachableOrOpenState(4,true,true);
-        ChangeReachableOrOpenState(5,true,true);
+        ChangeReachableOrOpenState(1,true,false);
+        ChangeReachableOrOpenState(2,true,false);
+        ChangeReachableOrOpenState(3,true,false);
+        ChangeReachableOrOpenState(4,true,false);
+        ChangeReachableOrOpenState(5,true,false);
     }
 
     // Update is called once per frame
@@ -178,6 +178,7 @@ public class EditCustomLevel : MonoBehaviour
     public void MoveKUB(int dir)
     {
         if (move != null) return;
+        Debug.Log("Face : " + currentFace + ", Rot : " + currentFaceRot);
         switch (dir)
         {
             case 0: move = StartCoroutine(goUp()); break;
@@ -194,6 +195,7 @@ public class EditCustomLevel : MonoBehaviour
         var timeEllapsed = 0f;
         grids[(int)currentFace].GridActive(false);
         currentFace = getNextFace(currentFace, currentFaceRot, 0);
+        Debug.Log("Face : " + currentFace + ", Rot : " + currentFaceRot);
         var nextRot = KUB.rotation * Quaternion.Euler(90,0,0);
         while (timeEllapsed < 0.25f)
         {
@@ -211,6 +213,7 @@ public class EditCustomLevel : MonoBehaviour
         var timeEllapsed = 0f;
         grids[(int)currentFace].GridActive(false);
         currentFace = getNextFace(currentFace, currentFaceRot, 180);
+        Debug.Log("Face : " + currentFace + ", Rot : " + currentFaceRot);
         while (timeEllapsed < 0.25f)
         {
             KUB.Rotate(-90 * 4 * Vector3.left * Time.deltaTime, Space.World);
@@ -227,6 +230,7 @@ public class EditCustomLevel : MonoBehaviour
         var timeEllapsed = 0f;
         grids[(int)currentFace].GridActive(false);
         currentFace = getNextFace(currentFace, currentFaceRot, 270);
+        Debug.Log("Face : " + currentFace + ", Rot : " + currentFaceRot);
         while (timeEllapsed < 0.25f)
         {
             KUB.Rotate(-90 * 4 * Vector3.up * Time.deltaTime, Space.World);
@@ -243,6 +247,7 @@ public class EditCustomLevel : MonoBehaviour
         var timeEllapsed = 0f;
         grids[(int)currentFace].GridActive(false);
         currentFace = getNextFace(currentFace, currentFaceRot, 90);
+        Debug.Log("Face : " + currentFace + ", Rot : " + currentFaceRot);
         while (timeEllapsed < 0.25f)
         {
             KUB.Rotate(90 * 4 * Vector3.up * Time.deltaTime, Space.World);
@@ -259,6 +264,7 @@ public class EditCustomLevel : MonoBehaviour
         var timeEllapsed = 0f;
         grids[(int)currentFace].GridActive(false);
         currentFaceRot -= 90;
+        if (currentFaceRot < 0) currentFaceRot += 360;
         while (timeEllapsed < 0.25f)
         {
             KUB.Rotate(-90 * 4 * Vector3.forward * Time.deltaTime, Space.World);
@@ -275,6 +281,7 @@ public class EditCustomLevel : MonoBehaviour
         var timeEllapsed = 0f;
         grids[(int)currentFace].GridActive(false);
         currentFaceRot += 90;
+        if (currentFaceRot >= 360) currentFaceRot -= 360;
         while (timeEllapsed < 0.25f)
         {
             KUB.Rotate(90 * 4 * Vector3.forward * Time.deltaTime, Space.World);
@@ -327,47 +334,191 @@ public class EditCustomLevel : MonoBehaviour
     {
         switch ((int)f)
         {
-            case 0: switch (rot + dir) 
+            case 0: switch (rot)
             {
-                case 0: return Face.Yplus;
-                case 90: return Face.Xplus;
-                case 180: return Face.Yminus;
-                case 270: return Face.Xminus;  
+                case 0: switch (dir)
+                {
+                    case 0: return Face.Yplus;
+                    case 90: return Face.Xplus;
+                    case 180: return Face.Yminus;
+                    case 270: return Face.Xminus;
+                } break;
+                case 90: switch (dir)
+                {
+                    case 0: return Face.Xplus;
+                    case 90: return Face.Yminus;
+                    case 180: return Face.Xminus;
+                    case 270: return Face.Yplus;
+                } break;
+                case 180: switch (dir)
+                {
+                    case 0: return Face.Yminus;
+                    case 90: return Face.Xminus;
+                    case 180: return Face.Yplus;
+                    case 270: return Face.Xplus;
+                } break;
+                case 270: switch (dir)
+                {
+                    case 0: return Face.Xminus;
+                    case 90: return Face.Yplus;
+                    case 180: return Face.Xplus;
+                    case 270: return Face.Yminus;
+                } break; 
             } break;
-            case 1: switch (rot + dir) 
+            case 1: switch (rot)
             {
-                case 0: return Face.Yplus;
-                case 90: return Face.Zplus;
-                case 180: return Face.Yminus;
-                case 270: return Face.Zminus;  
+                case 0: switch (dir)
+                {
+                    case 0: currentFaceRot = 270; return Face.Yplus;
+                    case 90: return Face.Zplus;
+                    case 180: currentFaceRot = 90; return Face.Yminus;
+                    case 270: return Face.Zminus;
+                } break;
+                case 90: switch (dir)
+                {
+                    case 0: return Face.Zplus;
+                    case 90: currentFaceRot = 180; return Face.Yminus;
+                    case 180: return Face.Zminus;
+                    case 270: currentFaceRot = 0; return Face.Yplus;
+                } break;
+                case 180: switch (dir)
+                {
+                    case 0: currentFaceRot = 270; return Face.Yminus;
+                    case 90: return Face.Zminus;
+                    case 180: currentFaceRot = 90; return Face.Yplus;
+                    case 270: return Face.Zplus;
+                } break;
+                case 270: switch (dir)
+                {
+                    case 0: return Face.Zminus;
+                    case 90: currentFaceRot = 180; return Face.Yplus;
+                    case 180: return Face.Zplus;
+                    case 270: currentFaceRot = 0; return Face.Yminus;
+                } break; 
             } break;
-            case 2: switch (rot + dir) 
+            case 2: switch (rot)
             {
-                case 0: return Face.Yplus;
-                case 90: return Face.Xminus;
-                case 180: return Face.Yminus;
-                case 270: return Face.Xplus;  
+                case 0: switch (dir)
+                {
+                    case 0: currentFaceRot = 180; return Face.Yplus;
+                    case 90: return Face.Xminus;
+                    case 180: currentFaceRot = 180; return Face.Yminus;
+                    case 270: return Face.Xplus;
+                } break;
+                case 90: switch (dir)
+                {
+                    case 0: return Face.Xminus;
+                    case 90: currentFaceRot = 270; return Face.Yminus;
+                    case 180: return Face.Xplus;
+                    case 270: currentFaceRot = 270; return Face.Yplus;
+                } break;
+                case 180: switch (dir)
+                {
+                    case 0: currentFaceRot = 0; return Face.Yminus;
+                    case 90: return Face.Xplus;
+                    case 180: currentFaceRot = 0; return Face.Yplus;
+                    case 270: return Face.Xminus;
+                } break;
+                case 270: switch (dir)
+                {
+                    case 0: return Face.Xplus;
+                    case 90: currentFaceRot = 90; return Face.Yplus;
+                    case 180: return Face.Xminus;
+                    case 270: currentFaceRot = 90; return Face.Yminus;
+                } break; 
             } break;
-            case 3: switch (rot + dir) 
+            case 3: switch (rot)
             {
-                case 0: return Face.Yplus;
-                case 90: return Face.Zminus;
-                case 180: return Face.Yminus;
-                case 270: return Face.Zplus;  
+                case 0: switch (dir)
+                {
+                    case 0: currentFaceRot = 90; return Face.Yplus;
+                    case 90: return Face.Zminus;
+                    case 180: currentFaceRot = 270; return Face.Yminus;
+                    case 270: return Face.Zplus;
+                } break;
+                case 90: switch (dir)
+                {
+                    case 0: return Face.Zminus;
+                    case 90: currentFaceRot = 0; return Face.Yminus;
+                    case 180: return Face.Zplus;
+                    case 270: currentFaceRot = 180; return Face.Yplus;
+                } break;
+                case 180: switch (dir)
+                {
+                    case 0: currentFaceRot = 90; return Face.Yminus;
+                    case 90: return Face.Zplus;
+                    case 180: currentFaceRot = 270; return Face.Yplus;
+                    case 270: return Face.Zminus;
+                } break;
+                case 270: switch (dir)
+                {
+                    case 0: return Face.Zplus;
+                    case 90: currentFaceRot = 0; return Face.Yplus;
+                    case 180: return Face.Zminus;
+                    case 270: currentFaceRot = 180; return Face.Yminus;
+                } break; 
             } break;
-            case 4: switch (rot + dir) 
+            case 4: switch (rot)
             {
-                case 0: return Face.Zplus;
-                case 90: return Face.Xplus;
-                case 180: return Face.Zminus;
-                case 270: return Face.Xminus;  
+                case 0: switch (dir)
+                {
+                    case 0: currentFaceRot = 180; return Face.Zplus;
+                    case 90: currentFaceRot = 90; return Face.Xplus;
+                    case 180: currentFaceRot = 0; return Face.Zminus;
+                    case 270: currentFaceRot = 270; return Face.Xminus;
+                } break;
+                case 90: switch (dir)
+                {
+                    case 0: currentFaceRot = 180; return Face.Xplus;
+                    case 90: currentFaceRot = 90; return Face.Zminus;
+                    case 180: currentFaceRot = 0; return Face.Xminus;
+                    case 270: currentFaceRot = 270; return Face.Zplus;
+                } break;
+                case 180: switch (dir)
+                {
+                    case 0: currentFaceRot = 180; return Face.Zminus;
+                    case 90: currentFaceRot = 90; return Face.Xminus;
+                    case 180: currentFaceRot = 0; return Face.Zplus;
+                    case 270: currentFaceRot = 270; return Face.Xplus;
+                } break;
+                case 270: switch (dir)
+                {
+                    case 0: currentFaceRot = 180; return Face.Xminus;
+                    case 90: currentFaceRot = 90; return Face.Zplus;
+                    case 180: currentFaceRot = 0; return Face.Xplus;
+                    case 270: currentFaceRot = 270; return Face.Zminus;
+                } break;
             } break;
-            case 5: switch (rot + dir) 
+           case 5: switch (rot)
             {
-                case 0: return Face.Zminus;
-                case 90: return Face.Xplus;
-                case 180: return Face.Zplus;
-                case 270: return Face.Xminus;  
+                case 0: switch (dir)
+                {
+                    case 0: currentFaceRot = 0; return Face.Zminus;
+                    case 90: currentFaceRot = 270; return Face.Xplus;
+                    case 180: currentFaceRot = 180; return Face.Zplus;
+                    case 270: currentFaceRot = 90; return Face.Xminus;
+                } break;
+                case 90: switch (dir)
+                {
+                    case 0: currentFaceRot = 0; return Face.Xplus;
+                    case 90: currentFaceRot = 270; return Face.Zplus;
+                    case 180: currentFaceRot = 180; return Face.Xminus;
+                    case 270: currentFaceRot = 90; return Face.Zminus;
+                } break;
+                case 180: switch (dir)
+                {
+                    case 0: currentFaceRot = 0; return Face.Zplus;
+                    case 90: currentFaceRot = 270; return Face.Xminus;
+                    case 180: currentFaceRot = 180; return Face.Zminus;
+                    case 270: currentFaceRot = 90; return Face.Xplus;
+                } break;
+                case 270: switch (dir)
+                {
+                    case 0: currentFaceRot = 0; return Face.Xminus;
+                    case 90: currentFaceRot = 270; return Face.Zminus;
+                    case 180: currentFaceRot = 180; return Face.Xplus;
+                    case 270: currentFaceRot = 90; return Face.Zplus;
+                } break;
             } break;
         }
         return Face.Zminus;

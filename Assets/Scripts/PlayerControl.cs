@@ -16,7 +16,7 @@ public class PlayerControl : MonoBehaviour
     float yVelocity;
     float highJumpTimer;
     int jumpsLeft;
-    Vector3 basePos;
+    public Vector3 basePos;
     Rigidbody rb;
     private Vector3 groundCheckScale;
     private Vector3 wallCheckScale;
@@ -160,15 +160,11 @@ public class PlayerControl : MonoBehaviour
         var timeEllapsed = 0f;
         while (timeEllapsed < 1f)
         {
-            KUB.rotation = Quaternion.Lerp(KUB.rotation, Quaternion.identity, timeEllapsed);
-            foreach (AntigravityBehaviour p in AntigravityBehaviour.staticPlatforms)
-            {
-                p.transform.localRotation = Quaternion.Lerp(p.transform.localRotation, p.baseRot, timeEllapsed);
-            }
+            KUB.rotation = Quaternion.Lerp(KUB.rotation, GameManager.Instance.KUBBaseRot, timeEllapsed);
             timeEllapsed += Time.deltaTime;
             yield return null;
         }
-        KUB.rotation = Quaternion.identity;
+        KUB.rotation = GameManager.Instance.KUBBaseRot;
         transform.position = basePos;
         GetComponent<Renderer>().enabled = true;
         GameManager.Instance.pause = false;

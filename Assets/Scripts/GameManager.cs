@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour
     public bool konamiCoded;
     public PlayerControl Player;
     public GameObject KUB;
+    public Quaternion KUBBaseRot = Quaternion.identity;
     private Coroutine transitLevel;
 
     void Awake()
@@ -85,7 +86,7 @@ public class GameManager : MonoBehaviour
                 {
                     case 0: break;
                     case 1: GameObject.Find("Player").GetComponent<PlayerControl>().Die(); break;
-                    case 2: GameManager.Instance.inGame = false; SceneManager.LoadScene("TitleScreen"); break;//TODO anim ?
+                    case 2: KUBBaseRot = Quaternion.identity; inGame = false; SceneManager.LoadScene("TitleScreen"); break; //TODO anim ?
                 }
                 pauseOption = -1;
                 transform.GetChild(0).gameObject.SetActive(false);
@@ -105,7 +106,7 @@ public class GameManager : MonoBehaviour
         currentLevel++;
         PlaySound(3);
         pause = true;
-        AntigravityBehaviour.staticPlatforms.Clear();
+        KUBBaseRot = Quaternion.identity;
         if (!isCustomLevel)
         {
             if (currentLevel == 6) discovered = true;

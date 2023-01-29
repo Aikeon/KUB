@@ -11,13 +11,11 @@ public class AntigravityBehaviour : MonoBehaviour
     public Quaternion baseRot;
     private Vector3 baseEulerAngles;
     private bool inEditor;
-    static public List<AntigravityBehaviour> staticPlatforms = new List<AntigravityBehaviour>();
     // Start is called before the first frame update
     void Start()
     {
         inEditor = EditCustomLevel.Instance != null;
         KUB = GameManager.Instance.KUB.transform;
-        staticPlatforms.Add(this);
         baseEulerAngles = transform.localEulerAngles;
     }
 

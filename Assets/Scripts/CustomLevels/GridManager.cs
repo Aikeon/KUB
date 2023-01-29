@@ -15,6 +15,7 @@ public class GridManager : MonoBehaviour
     public TileBehaviour[] tiles;
     public int tileColumnNumber;
     public bool isActive;
+    public static bool gridsActivated;
     // Start is called before the first frame update
     void Start()
     {
@@ -28,7 +29,11 @@ public class GridManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.G)) GridActive(false);
+        if (Input.GetKeyDown(KeyCode.G)) 
+        {
+            gridsActivated = !gridsActivated;
+            GridActive(gridsActivated);
+        }
         if (latestActiveGridSize != activeGridSize || latestCellSize != cellSize || latestGridLineWidth != gridLineWidth)
         {
             ClearGrid();

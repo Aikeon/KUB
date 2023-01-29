@@ -41,6 +41,10 @@ MonoBehaviour:
     m_Address: Static
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 7d146b55de3032f408452ae0babef78a
+    m_Address: CheckPoint
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: f08dad2fd139b1d458e0e16849ca93a7, type: 2}
   m_SchemaSet:

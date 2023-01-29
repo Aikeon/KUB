@@ -1885,6 +1885,9 @@ MonoBehaviour:
   fondu: {fileID: 0}
   discovered: 0
   konamiCoded: 0
+  Player: {fileID: 0}
+  KUB: {fileID: 0}
+  KUBBaseRot: {x: 0, y: 0, z: 0, w: 1}
 --- !u!1 &1071135767
 GameObject:
   m_ObjectHideFlags: 0
