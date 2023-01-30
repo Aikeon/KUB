@@ -5816,6 +5816,14 @@ MonoBehaviour:
   konamiCoded: 0
   Player: {fileID: 0}
   KUB: {fileID: 0}
+  KUBBaseRot: {x: 0, y: 0, z: 0, w: 1}
+  cubeLetterPrefab: {fileID: 0}
+  cubFallCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &1262709495
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8472,7 +8480,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 22.6
+  m_fontSize: 26.5
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -9901,6 +9909,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1998508113446318224, guid: e2f98eda45e673a43a2461c4b2633be8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5352772037574005421, guid: e2f98eda45e673a43a2461c4b2633be8, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5380632104307108789, guid: e2f98eda45e673a43a2461c4b2633be8, type: 3}

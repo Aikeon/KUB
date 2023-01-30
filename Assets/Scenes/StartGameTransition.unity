@@ -347,7 +347,7 @@ GameObject:
   - component: {fileID: 566102292}
   - component: {fileID: 566102291}
   m_Layer: 0
-  m_Name: Canvas
+  m_Name: Transitions
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -692,6 +692,32 @@ MonoBehaviour:
   konamiCoded: 0
   Player: {fileID: 0}
   KUB: {fileID: 0}
+  KUBBaseRot: {x: 0, y: 0, z: 0, w: 1}
+  cubeLetterPrefab: {fileID: 7647820288694970867, guid: 3099bbdf9a2e6804bbca604412f833d3, type: 3}
+  cubFallCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0.0083351135
+      value: 20
+      inSlope: -77.11138
+      outSlope: -77.11138
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.037500005
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &1066779880
 MonoBehaviour:
   m_ObjectHideFlags: 0

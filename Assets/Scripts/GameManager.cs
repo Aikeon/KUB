@@ -32,6 +32,9 @@ public class GameManager : MonoBehaviour
     public GameObject KUB;
     public Quaternion KUBBaseRot = Quaternion.identity;
     private Coroutine transitLevel;
+    [SerializeField] private GameObject cubeLetterPrefab;
+    [SerializeField] private AnimationCurve cubFallCurve;
+    private bool retrieveCubs;
 
     void Awake()
     {
@@ -102,7 +105,6 @@ public class GameManager : MonoBehaviour
 
     public void goToNextLevel(bool isCustomLevel)
     {
-        //TODO : Fondu dépendant de la couleur de fond
         currentLevel++;
         PlaySound(3);
         pause = true;
@@ -113,10 +115,15 @@ public class GameManager : MonoBehaviour
             levelsUnlocked.Add(currentLevel);
             GameManager.Instance.SaveGame();
         }
-        transitLevel = StartCoroutine(transition((isCustomLevel ? "TitleScreen" : ("Level" + currentLevel.ToString()))));
+        transitLevel = StartCoroutine(transitionToNextLevel((isCustomLevel ? "TitleScreen" : ("Level" + currentLevel.ToString()))));
     }
 
-    IEnumerator transition(string nextSceneName)
+    IEnumerator transitionFromMenuToLevel()
+    {
+        yield return null;
+    }
+
+    IEnumerator transitionToNextLevel(string nextSceneName)
     {
         switch ((currentLevel-1) / 5)
         {
@@ -142,6 +149,107 @@ public class GameManager : MonoBehaviour
         }
         transitLevel = null;
         pause = false;
+    }
+
+    public void showLevelName(string name)
+    {
+        StartCoroutine(showLevelNameEnum(name));
+    }
+
+    IEnumerator showLevelNameEnum(string name)
+    {
+        retrieveCubs = false;
+        var scale = Mathf.Clamp(10/name.Length,0,1); //TODO Use this and apply it everywhere after
+        for (int i = 0; i < name.Length; i++)
+        {
+            var rd = Random.Range(0,4);
+            if (name[i].ToString() != " ")
+            {
+                var iLetter = CreateCubeLetter((i + 0.5f - name.Length/2)* 3.5f * Vector3.right - 25 * Vector3.forward, name[i], rd);
+                StartCoroutine(cubeLetterBehaviour(iLetter, rd, false));
+            }
+            
+        }
+        yield return new WaitForSeconds(4f);
+        retrieveCubs = true;
+    }
+
+    IEnumerator cubeLetterBehaviour(GameObject cub, int rdFace, bool reversed)
+    {
+        var rseed = Random.Range(0,3);
+        yield return new WaitForSeconds(Random.Range(0f,1f));
+        var timeEllapsed = 0f;
+        switch (rseed)
+        {
+            case 0: cub.transform.localScale = (reversed) ? 0.15f * Vector3.one : Vector3.zero; break;
+            case 1: cub.transform.position = (reversed) ? new Vector3(cub.transform.position.x, 0, cub.transform.position.z) : cub.transform.position + 20 * Vector3.up; break;
+            case 2: cub.transform.position = (reversed) ? new Vector3(cub.transform.position.x, 0, cub.transform.position.z) : cub.transform.position - 20 * Vector3.up; break;
+        }
+        cub.SetActive(true);
+        switch (rseed)
+        {
+            case 0: while (timeEllapsed < 0.5f) 
+                            {
+                                cub.transform.localScale = Vector3.Lerp(Vector3.zero, 0.15f * Vector3.one, (reversed) ? 1 - timeEllapsed*2f : timeEllapsed*2f); 
+                                timeEllapsed += Time.deltaTime; 
+                                yield return null;
+                            } 
+                            break;
+            case 1: while (timeEllapsed < 1f) 
+                            {
+                                cub.transform.position = new Vector3(cub.transform.position.x, cubFallCurve.Evaluate((reversed) ? 1 - timeEllapsed : timeEllapsed), cub.transform.position.z); 
+                                timeEllapsed += Time.deltaTime; 
+                                yield return null;
+                            }
+                            break;
+            case 2: while (timeEllapsed < 1f) 
+                            {
+                                cub.transform.position = new Vector3(cub.transform.position.x, -cubFallCurve.Evaluate((reversed) ? 1 - timeEllapsed : timeEllapsed), cub.transform.position.z); 
+                                timeEllapsed += Time.deltaTime; 
+                                yield return null;
+                            }
+                            break;
+        }
+        switch (rseed)
+        {
+            case 0: cub.transform.localScale = (reversed) ? Vector3.zero : 0.15f * Vector3.one; break;
+            case 1: 
+            case 2: cub.transform.position = (reversed) ? Vector3.up * 200 : new Vector3(cub.transform.position.x, 0, cub.transform.position.z); break;
+        }
+        var t2 = 0f;
+        Quaternion newRot = Quaternion.identity;
+        switch (rdFace)
+        {
+            case 0: newRot = cub.transform.rotation * Quaternion.Euler(-90,0,0); break;
+            case 1: newRot = cub.transform.rotation * Quaternion.Euler(0,-90,0); break;
+            case 2: newRot = cub.transform.rotation * Quaternion.Euler(0,90,0); break;
+            case 3: newRot = cub.transform.rotation * Quaternion.Euler(90,0,0); break;
+        }
+        while (t2 < 1)
+        {
+            cub.transform.rotation = Quaternion.Lerp(cub.transform.rotation, newRot, t2);
+            t2 += Time.deltaTime;
+            yield return null;
+        }
+
+        if (!reversed) 
+        {
+            while (!retrieveCubs) yield return null;
+            StartCoroutine(cubeLetterBehaviour(cub, Random.Range(0,4), true));
+        }
+        else 
+        {
+            Destroy(cub);
+        }
+    }
+
+    GameObject CreateCubeLetter(Vector3 pos, char c, int rd)
+    {
+        var g = Instantiate(cubeLetterPrefab, pos, Quaternion.identity);
+        var txtcan = g.transform.GetChild(6 + rd).gameObject;
+        txtcan.SetActive(true);
+        txtcan.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = c.ToString();
+        return g;
     }
 
     private Save CreateSaveGameObject()

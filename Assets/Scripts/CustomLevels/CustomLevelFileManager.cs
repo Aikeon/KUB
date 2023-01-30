@@ -110,6 +110,7 @@ public class CustomLevelFileManager : MonoBehaviour
             {
                 Transform faceFolder = GameManager.Instance.KUB.transform.GetChild(1);
                 Transform doorFolder = GameManager.Instance.KUB.transform.GetChild(3);
+                GameManager.Instance.KUB.GetComponent<StartLevel>().SetAndShowName(levelfile.name);
                 faceFolder.GetChild(0).GetChild(0).gameObject.SetActive(!levelfile.faceReachable[1]);
                 faceFolder.GetChild(1).GetChild(0).gameObject.SetActive(!levelfile.faceReachable[3]);
                 faceFolder.GetChild(2).GetChild(0).gameObject.SetActive(!levelfile.faceReachable[4]);
