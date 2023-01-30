@@ -159,14 +159,14 @@ public class GameManager : MonoBehaviour
     IEnumerator showLevelNameEnum(string name)
     {
         retrieveCubs = false;
-        var scale = Mathf.Clamp(10/name.Length,0,1); //TODO Use this and apply it everywhere after
+        var scale = (name.Length == 0) ? 1f : Mathf.Clamp(10f/name.Length,0f,2f);
         for (int i = 0; i < name.Length; i++)
         {
             var rd = Random.Range(0,4);
             if (name[i].ToString() != " ")
             {
-                var iLetter = CreateCubeLetter((i + 0.5f - name.Length/2)* 3.5f * Vector3.right - 25 * Vector3.forward, name[i], rd);
-                StartCoroutine(cubeLetterBehaviour(iLetter, rd, false));
+                var iLetter = CreateCubeLetter((i + 0.5f - name.Length/2f)* 3.5f * scale * Vector3.right - 25 * Vector3.forward, name[i], rd, scale);
+                StartCoroutine(cubeLetterBehaviour(iLetter, rd, false, scale));
             }
             
         }
@@ -174,14 +174,14 @@ public class GameManager : MonoBehaviour
         retrieveCubs = true;
     }
 
-    IEnumerator cubeLetterBehaviour(GameObject cub, int rdFace, bool reversed)
+    IEnumerator cubeLetterBehaviour(GameObject cub, int rdFace, bool reversed, float scale)
     {
         var rseed = Random.Range(0,3);
         yield return new WaitForSeconds(Random.Range(0f,1f));
         var timeEllapsed = 0f;
         switch (rseed)
         {
-            case 0: cub.transform.localScale = (reversed) ? 0.15f * Vector3.one : Vector3.zero; break;
+            case 0: cub.transform.localScale = (reversed) ? 0.15f * scale * Vector3.one : Vector3.zero; break;
             case 1: cub.transform.position = (reversed) ? new Vector3(cub.transform.position.x, 0, cub.transform.position.z) : cub.transform.position + 20 * Vector3.up; break;
             case 2: cub.transform.position = (reversed) ? new Vector3(cub.transform.position.x, 0, cub.transform.position.z) : cub.transform.position - 20 * Vector3.up; break;
         }
@@ -190,7 +190,7 @@ public class GameManager : MonoBehaviour
         {
             case 0: while (timeEllapsed < 0.5f) 
                             {
-                                cub.transform.localScale = Vector3.Lerp(Vector3.zero, 0.15f * Vector3.one, (reversed) ? 1 - timeEllapsed*2f : timeEllapsed*2f); 
+                                cub.transform.localScale = Vector3.Lerp(Vector3.zero, 0.15f * scale * Vector3.one, (reversed) ? 1 - timeEllapsed*2f : timeEllapsed*2f); 
                                 timeEllapsed += Time.deltaTime; 
                                 yield return null;
                             } 
@@ -212,7 +212,7 @@ public class GameManager : MonoBehaviour
         }
         switch (rseed)
         {
-            case 0: cub.transform.localScale = (reversed) ? Vector3.zero : 0.15f * Vector3.one; break;
+            case 0: cub.transform.localScale = (reversed) ? Vector3.zero : 0.15f * scale * Vector3.one; break;
             case 1: 
             case 2: cub.transform.position = (reversed) ? Vector3.up * 200 : new Vector3(cub.transform.position.x, 0, cub.transform.position.z); break;
         }
@@ -235,7 +235,7 @@ public class GameManager : MonoBehaviour
         if (!reversed) 
         {
             while (!retrieveCubs) yield return null;
-            StartCoroutine(cubeLetterBehaviour(cub, Random.Range(0,4), true));
+            StartCoroutine(cubeLetterBehaviour(cub, Random.Range(0,4), true, scale));
         }
         else 
         {
@@ -243,9 +243,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    GameObject CreateCubeLetter(Vector3 pos, char c, int rd)
+    GameObject CreateCubeLetter(Vector3 pos, char c, int rd, float scale)
     {
         var g = Instantiate(cubeLetterPrefab, pos, Quaternion.identity);
+        g.transform.localScale = 0.15f * scale * Vector3.one;
         var txtcan = g.transform.GetChild(6 + rd).gameObject;
         txtcan.SetActive(true);
         txtcan.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = c.ToString();
