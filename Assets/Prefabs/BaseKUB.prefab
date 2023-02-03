@@ -2452,6 +2452,7 @@ MonoBehaviour:
   fixedRotation: 0
   baseOrtho: 1
   ProjectionChangeTime: 1
+  currentRotation: {x: 0, y: 0, z: 0}
 --- !u!114 &5352772037574005421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2464,6 +2465,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14afe010f1d7e2b4c8ec5786067dcade, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  levelName: 
 --- !u!1 &5380632104325931811
 GameObject:
   m_ObjectHideFlags: 0

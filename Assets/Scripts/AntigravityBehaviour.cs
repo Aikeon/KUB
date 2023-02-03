@@ -6,28 +6,24 @@ public class AntigravityBehaviour : MonoBehaviour
 {
     public enum Axis{X,Y,Z};
 
-    public Axis axis;
-    [SerializeField] Transform KUB;
-    public Quaternion baseRot;
     private Vector3 baseEulerAngles;
     private bool inEditor;
+    private Vector3 positionOnFace;
+    private Transform faceParent;
     // Start is called before the first frame update
     void Start()
     {
+        positionOnFace = transform.localPosition;
         inEditor = EditCustomLevel.Instance != null;
-        KUB = GameManager.Instance.KUB.transform;
         baseEulerAngles = transform.localEulerAngles;
+        faceParent = transform.parent;
+        transform.SetParent(null);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!CameraControl.currentlyOrthographic) return;
-        switch (axis)
-        {
-            case Axis.X: transform.localEulerAngles = baseEulerAngles + Vector3.forward * Vector3.Angle(KUB.up,Vector3.up); break;
-            case Axis.Y: transform.localEulerAngles = baseEulerAngles + Vector3.forward * Vector3.Angle(KUB.forward,Vector3.forward); break;
-            case Axis.Z: transform.localEulerAngles = baseEulerAngles + Vector3.forward * Vector3.Angle(KUB.right,Vector3.right); break;
-        }
+        transform.position = faceParent.position + faceParent.rotation * positionOnFace;
+        transform.eulerAngles = baseEulerAngles;
     }
 }

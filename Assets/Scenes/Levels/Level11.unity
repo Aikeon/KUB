@@ -422,6 +422,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Antigravity (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 2416183907787200652, guid: 4918f1952a63983499cd4b3d1d69c71b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8956509191798346903, guid: 4918f1952a63983499cd4b3d1d69c71b, type: 3}
       propertyPath: KUB
       value: 

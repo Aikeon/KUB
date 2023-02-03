@@ -86,18 +86,7 @@ public class TileBehaviour : MonoBehaviour
                 if (db != null) db.enabled = false;
                 obj.transform.SetParent(transform);
                 obj.TryGetComponent<AntigravityBehaviour>(out var ab);
-                if (ab != null)
-                {
-                    switch (EditCustomLevel.Instance.currentFace)
-                    {
-                        case Face.Zminus:
-                        case Face.Zplus: ab.axis = AntigravityBehaviour.Axis.Z; break;
-                        case Face.Xminus:
-                        case Face.Xplus: ab.axis = AntigravityBehaviour.Axis.X; break;
-                        case Face.Yminus:
-                        case Face.Yplus: ab.axis = AntigravityBehaviour.Axis.Y; break;
-                    }
-                }
+                if (ab != null) ab.enabled = false; //TODO change this later, when you will give a viewing option to player (shift vision)
                 obj.transform.localPosition = Vector3.zero;
                 obj.transform.localScale = new Vector3(obj.transform.localScale.x * grid.cellSize.x, obj.transform.localScale.y * grid.cellSize.y, obj.transform.localScale.z);
                 obj.transform.SetParent(transform.parent.parent);

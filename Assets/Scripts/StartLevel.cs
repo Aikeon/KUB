@@ -11,11 +11,6 @@ public class StartLevel : MonoBehaviour
         SetAndShowName(levelName); //TODO play it after the transition
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.E)) SetAndShowName(levelName);
-    }
-
     public void SetAndShowName(string name)
     {
         levelName = name;
