@@ -6,7 +6,7 @@ public class PlayerControl : MonoBehaviour
 {
     [SerializeField] private float speed;
     [SerializeField] private float jumpSpeed;
-    [SerializeField] private float gravity;
+    public float gravity;
     [SerializeField] private float maxFall;
     [SerializeField] private float maxHighJumpTime;
     [SerializeField] private Transform KUB;
@@ -17,10 +17,10 @@ public class PlayerControl : MonoBehaviour
     float highJumpTimer;
     int jumpsLeft;
     public Vector3 basePos;
-    Rigidbody rb;
+    public Rigidbody rb;
     private Vector3 groundCheckScale;
     private Vector3 wallCheckScale;
-    private Vector3 newVelocity;
+    public Vector3 newVelocity;
     private bool isGrounded;
     private Collider[] colls;
     private bool hasPlayedSound;

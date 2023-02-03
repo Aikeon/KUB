@@ -34,7 +34,9 @@ public class GameManager : MonoBehaviour
     private Coroutine transitLevel;
     [SerializeField] private GameObject cubeLetterPrefab;
     [SerializeField] private AnimationCurve cubFallCurve;
+    [SerializeField] private AnimationCurve endLevelPlayerScale;
     private bool retrieveCubs;
+    public bool changingLevel;
 
     void Awake()
     {
@@ -57,7 +59,8 @@ public class GameManager : MonoBehaviour
         pauseTexts[0] = transform.GetChild(0).GetChild(1).gameObject.GetComponent<TextMeshProUGUI>();
         pauseTexts[1] = transform.GetChild(0).GetChild(2).gameObject.GetComponent<TextMeshProUGUI>();
         pauseTexts[2] = transform.GetChild(0).GetChild(3).gameObject.GetComponent<TextMeshProUGUI>();
-        
+        changingLevel = false;
+
         Instance = this;
         StartCoroutine(LoadFirst());
         Cursor.lockState = CursorLockMode.Locked;
@@ -66,6 +69,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        //if (Input.GetKeyDown(KeyCode.N)) SceneManager.LoadScene("Footage");
         if (transitLevel != null) return;
         if (Input.GetKeyDown(InputManager.Instance.cancel) && inGame && pauseOption == -1 && discovered && DoorBehaviour.movement == null && CameraControl.movement == null)
         {
@@ -115,6 +119,8 @@ public class GameManager : MonoBehaviour
             levelsUnlocked.Add(currentLevel);
             GameManager.Instance.SaveGame();
         }
+        changingLevel = true;
+        Player.GetComponent<BoxCollider>().enabled = false;
         transitLevel = StartCoroutine(transitionToNextLevel((isCustomLevel ? "TitleScreen" : ("Level" + currentLevel.ToString()))));
     }
 
@@ -131,24 +137,28 @@ public class GameManager : MonoBehaviour
             case 1: fondu.color = new Color(1,0,0,0); break;
             case 2: fondu.color = new Color(0,1,0,0); break;
         }
-        yield return new WaitForSeconds(2f);
         var timeEllapsed = 0f;
-        while (timeEllapsed < 2f)
+        while (timeEllapsed < 4f)
         {
-            fondu.color = new Color(fondu.color.r,fondu.color.g,fondu.color.b,timeEllapsed/2);
+            if (timeEllapsed < endLevelPlayerScale.keys[endLevelPlayerScale.length-1].time)
+            {
+                Player.transform.localScale = endLevelPlayerScale.Evaluate(timeEllapsed) * Vector3.one;
+            }
+            fondu.color = new Color(fondu.color.r,fondu.color.g,fondu.color.b,Mathf.Max(timeEllapsed - 2, 0)/2);
             timeEllapsed += Time.deltaTime;
             yield return null;
         }
         SceneManager.LoadScene(nextSceneName);
         yield return new WaitForSeconds(1f);
-        while (timeEllapsed < 4f)
+        while (timeEllapsed < 6f)
         {
-            fondu.color = new Color(fondu.color.r,fondu.color.g,fondu.color.b,(4 - timeEllapsed)/2);
+            fondu.color = new Color(fondu.color.r,fondu.color.g,fondu.color.b,Mathf.Max(6 - timeEllapsed, 0)/2);
             timeEllapsed += Time.deltaTime;
             yield return null;
         }
         transitLevel = null;
         pause = false;
+        changingLevel = false;
     }
 
     public void showLevelName(string name)
@@ -186,6 +196,21 @@ public class GameManager : MonoBehaviour
             case 2: cub.transform.position = (reversed) ? new Vector3(cub.transform.position.x, 0, cub.transform.position.z) : cub.transform.position - 20 * Vector3.up; break;
         }
         cub.SetActive(true);
+        var t2 = 0f;
+        Quaternion newRot = Quaternion.identity;
+        switch (rdFace)
+        {
+            case 0: newRot = cub.transform.rotation * Quaternion.Euler(-90,0,0); break;
+            case 1: newRot = cub.transform.rotation * Quaternion.Euler(0,-90,0); break;
+            case 2: newRot = cub.transform.rotation * Quaternion.Euler(0,90,0); break;
+            case 3: newRot = cub.transform.rotation * Quaternion.Euler(90,0,0); break;
+        }
+        while (t2 < 1 && reversed)
+        {
+            cub.transform.rotation = Quaternion.Lerp(cub.transform.rotation, newRot, t2);
+            t2 += Time.deltaTime;
+            yield return null;
+        }
         switch (rseed)
         {
             case 0: while (timeEllapsed < 0.5f) 
@@ -216,19 +241,19 @@ public class GameManager : MonoBehaviour
             case 1: 
             case 2: cub.transform.position = (reversed) ? Vector3.up * 200 : new Vector3(cub.transform.position.x, 0, cub.transform.position.z); break;
         }
-        var t2 = 0f;
-        Quaternion newRot = Quaternion.identity;
+        var t3 = 0f;
+        Quaternion newRot2 = Quaternion.identity;
         switch (rdFace)
         {
-            case 0: newRot = cub.transform.rotation * Quaternion.Euler(-90,0,0); break;
-            case 1: newRot = cub.transform.rotation * Quaternion.Euler(0,-90,0); break;
-            case 2: newRot = cub.transform.rotation * Quaternion.Euler(0,90,0); break;
-            case 3: newRot = cub.transform.rotation * Quaternion.Euler(90,0,0); break;
+            case 0: newRot2 = cub.transform.rotation * Quaternion.Euler(-90,0,0); break;
+            case 1: newRot2 = cub.transform.rotation * Quaternion.Euler(0,-90,0); break;
+            case 2: newRot2 = cub.transform.rotation * Quaternion.Euler(0,90,0); break;
+            case 3: newRot2 = cub.transform.rotation * Quaternion.Euler(90,0,0); break;
         }
-        while (t2 < 1)
+        while (t3 < 1 && !reversed)
         {
-            cub.transform.rotation = Quaternion.Lerp(cub.transform.rotation, newRot, t2);
-            t2 += Time.deltaTime;
+            cub.transform.rotation = Quaternion.Lerp(cub.transform.rotation, newRot2, t3);
+            t3 += Time.deltaTime;
             yield return null;
         }
 

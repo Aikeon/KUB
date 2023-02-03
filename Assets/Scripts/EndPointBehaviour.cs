@@ -9,7 +9,7 @@ public class EndPointBehaviour : MonoBehaviour
     
     void OnCollisionEnter(Collision collisionInfo)
     {
-        if (collisionInfo.collider.TryGetComponent<PlayerControl>(out var pc))
+        if (collisionInfo.collider.TryGetComponent<PlayerControl>(out var pc) && !GameManager.Instance.changingLevel)
         {
             //You win !
             Debug.Log("You win !");

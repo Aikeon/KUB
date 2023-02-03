@@ -57,7 +57,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Levels/Level15.unity
     guid: cef212a3d19cc8449ac0c35f97fb04c4
   - enabled: 1
-    path: Assets/Scenes/Levels/End.unity
+    path: Assets/Scenes/Levels/Level16.unity
     guid: 41810725b509fb244ad1ef72d8aee348
   - enabled: 1
     path: Assets/Scenes/Editor/LevelEditor.unity
@@ -65,5 +65,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Levels/CustomLevel.unity
     guid: ab05dfb99771d804daf2cefb6e5366ff
+  - enabled: 1
+    path: Assets/Scenes/Levels/Footage.unity
+    guid: ce58ec1bfc12fd241bfd9922bad70669
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 2acfe698fe4865e45a000f2865670f3c, type: 2}

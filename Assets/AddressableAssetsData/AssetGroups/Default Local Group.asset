@@ -45,6 +45,18 @@ MonoBehaviour:
     m_Address: CheckPoint
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 8d6a3e35dbeca1747924ae763351bb00
+    m_Address: Hazy
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 26cdbad90cf5717468c575679478cb6e
+    m_Address: Glue
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 0358bd5df3b11f64f985197d6e1f5dd4
+    m_Address: Warphole
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: f08dad2fd139b1d458e0e16849ca93a7, type: 2}
   m_SchemaSet:

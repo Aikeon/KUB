@@ -8,7 +8,13 @@ public class StartLevel : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        SetAndShowName(levelName); //TODO play it after the transition
+        StartCoroutine(showNameAtStart(levelName)); //TODO play it after the transition
+    }
+
+    IEnumerator showNameAtStart(string name)
+    {
+        yield return new WaitForSeconds(1);
+        SetAndShowName(name);
     }
 
     public void SetAndShowName(string name)
